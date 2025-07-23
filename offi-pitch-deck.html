@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OFFI - The Future of Corporate Real Estate</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --gray-50: #fafafa;
+            --gray-100: #f5f5f5;
+            --gray-200: #e5e5e5;
+            --gray-300: #d4d4d4;
+            --gray-400: #a3a3a3;
+            --gray-500: #737373;
+            --gray-600: #525252;
+            --gray-700: #404040;
+            --gray-800: #262626;
+            --gray-900: #171717;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            background: var(--black);
+            color: var(--white);
+            overflow: hidden;
+            cursor: none;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            transition: all 0.1s ease;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
+
+        .cursor.clicking {
+            transform: scale(0.8);
+        }
+
+        /* Slide System */
+        .presentation {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .slide-content {
+            text-align: center;
+            max-width: 1200px;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        /* Progress Bar */
+        .progress {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--gray-800);
+            z-index: 100;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--white);
+            transition: width 0.5s ease;
+        }
+
+        /* Navigation Hints */
+        .nav-hint {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+            opacity: 0;
+            animation: fadeIn 2s ease 3s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Typography */
+        .hero-title {
+            font-size: clamp(4rem, 10vw, 8rem);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 0.9;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUp 1s ease 0.5s forwards;
+        }
+
+        .subtitle {
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            font-weight: 300;
+            color: var(--gray-400);
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUp 1s ease 0.7s forwards;
+        }
+
+        .big-number {
+            font-size: clamp(6rem, 15vw, 12rem);
+            font-weight: 700;
+            letter-spacing: -0.05em;
+            line-height: 1;
+            background: linear-gradient(to bottom, var(--white) 0%, var(--gray-600) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Slide Specific Styles */
+        
+        /* Cover Slide */
+        .logo-mark {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 3rem;
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .logo-mark::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--white);
+            border-radius: 30px;
+            transform: rotate(45deg);
+        }
+
+        .logo-mark::after {
+            content: 'OFFI';
+            position: absolute;
+            top: 50%;
+            left: 68%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--black);
+            z-index: 1;
+            letter-spacing: 0.05em;
+        }
+
+        /* Problem Slide */
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+            margin-top: 4rem;
+            opacity: 0;
+            animation: fadeIn 1s ease 1s forwards;
+        }
+
+        .problem-item {
+            text-align: left;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideRight 0.8s ease forwards;
+        }
+
+        .problem-item:nth-child(1) { animation-delay: 1.2s; }
+        .problem-item:nth-child(2) { animation-delay: 1.4s; }
+        .problem-item:nth-child(3) { animation-delay: 1.6s; }
+        .problem-item:nth-child(4) { animation-delay: 1.8s; }
+
+        @keyframes slideRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .problem-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--gray-600);
+            margin-bottom: 1rem;
+        }
+
+        .problem-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .problem-desc {
+            color: var(--gray-400);
+            line-height: 1.6;
+        }
+
+        /* Solution Slide */
+        .solution-visual {
+            position: relative;
+            width: 800px;
+            height: 500px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeIn 1s ease 1s forwards;
+        }
+
+        .solution-circle {
+            position: absolute;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .solution-circle:hover {
+            transform: scale(1.1);
+            background: var(--white) !important;
+            color: var(--black) !important;
+        }
+
+        .circle-center {
+            width: 200px;
+            height: 200px;
+            background: var(--white);
+            color: var(--black);
+            font-size: 2rem;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .circle-outer {
+            width: 120px;
+            height: 120px;
+            background: var(--gray-800);
+            font-size: 0.875rem;
+        }
+
+        /* Market Slide */
+        .market-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4rem;
+            margin-top: 4rem;
+        }
+
+        .stat-card {
+            opacity: 0;
+            transform: scale(0.8);
+            animation: scaleIn 0.8s ease forwards;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.5s; }
+        .stat-card:nth-child(2) { animation-delay: 0.7s; }
+        .stat-card:nth-child(3) { animation-delay: 0.9s; }
+
+        @keyframes scaleIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .stat-number {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--gray-400);
+            font-size: 1.125rem;
+        }
+
+        /* Product Slide */
+        .product-showcase {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .device-mockup {
+            width: 100%;
+            height: 600px;
+            background: var(--gray-900);
+            border-radius: 20px;
+            border: 2px solid var(--gray-700);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: perspective(1000px) rotateY(-15deg);
+            animation: deviceReveal 1.5s ease 0.5s forwards;
+        }
+
+        @keyframes deviceReveal {
+            to {
+                opacity: 1;
+                transform: perspective(1000px) rotateY(0);
+            }
+        }
+
+        .screen-content {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            background: var(--black);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* Business Model */
+        .revenue-streams {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .revenue-card {
+            background: var(--gray-900);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--gray-800);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.8s ease forwards;
+        }
+
+        .revenue-card:nth-child(1) { animation-delay: 0.5s; }
+        .revenue-card:nth-child(2) { animation-delay: 0.6s; }
+        .revenue-card:nth-child(3) { animation-delay: 0.7s; }
+        .revenue-card:nth-child(4) { animation-delay: 0.8s; }
+
+        .revenue-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .revenue-title {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .revenue-percentage {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-300);
+        }
+
+        /* Traction Slide */
+        .traction-timeline {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 4rem auto;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gray-700);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 4rem;
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .timeline-item:nth-child(odd) { 
+            text-align: right;
+            padding-right: calc(50% + 2rem);
+            animation-delay: 0.5s;
+        }
+
+        .timeline-item:nth-child(even) { 
+            text-align: left;
+            padding-left: calc(50% + 2rem);
+            animation-delay: 0.7s;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: var(--white);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Team Slide */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .team-member {
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: scaleIn 0.8s ease forwards;
+        }
+
+        .team-member:nth-child(1) { animation-delay: 0.5s; }
+        .team-member:nth-child(2) { animation-delay: 0.6s; }
+        .team-member:nth-child(3) { animation-delay: 0.7s; }
+        .team-member:nth-child(4) { animation-delay: 0.8s; }
+
+        .member-avatar {
+            width: 120px;
+            height: 120px;
+            background: var(--gray-800);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .member-name {
+            font-size: 1.125rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .member-role {
+            color: var(--gray-400);
+            font-size: 0.875rem;
+        }
+
+        /* CTA Slide */
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 3rem;
+            opacity: 0;
+            animation: fadeIn 1s ease 1s forwards;
+        }
+
+        .btn {
+            padding: 1.25rem 3rem;
+            border-radius: 50px;
+            font-size: 1.125rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            cursor: none;
+        }
+
+        .btn-primary {
+            background: var(--white);
+            color: var(--black);
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--gray-600);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-900);
+            border-color: var(--gray-500);
+        }
+
+        /* Contact Info */
+        .contact-info {
+            margin-top: 4rem;
+            color: var(--gray-400);
+            font-size: 0.875rem;
+            opacity: 0;
+            animation: fadeIn 1s ease 1.5s forwards;
+        }
+
+        /* Keyboard hint */
+        .keyboard-hint {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--gray-400);
+            opacity: 0;
+            animation: fadeIn 1s ease 2s forwards;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .subtitle {
+                font-size: 1.25rem;
+            }
+
+            .problem-grid,
+            .market-stats,
+            .revenue-streams,
+            .team-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .solution-visual {
+                transform: scale(0.6);
+            }
+
+            .nav-hint,
+            .keyboard-hint {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+
+    <!-- Progress Bar -->
+    <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Keyboard Hint -->
+    <div class="keyboard-hint">Use ← → or spacebar</div>
+
+    <!-- Navigation Hint -->
+    <div class="nav-hint">Click or press space to continue →</div>
+
+    <!-- Presentation Container -->
+    <div class="presentation" id="presentation">
+        
+        <!-- Slide 1: Cover -->
+        <div class="slide active">
+            <div class="slide-content">
+                <div class="logo-mark"></div>
+                <h1 class="hero-title">The Future of<br>Corporate Real Estate</h1>
+                <p class="subtitle">AI-powered platform revolutionizing how companies find,<br>customize and occupy office spaces</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Problem -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="hero-title">The Problem</h2>
+                <div class="problem-grid">
+                    <div class="problem-item">
+                        <div class="problem-number">01</div>
+                        <h3 class="problem-title">Conflito de Interesse</h3>
+                        <p class="problem-desc">Consultorias tradicionais representam ambos os lados</p>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-number">02</div>
+                        <h3 class="problem-title">Dados Fragmentados</h3>
+                        <p class="problem-desc">Informações incompletas e desatualizadas</p>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-number">03</div>
+                        <h3 class="problem-title">Processo Complexo</h3>
+                        <p class="problem-desc">Múltiplos fornecedores, sem integração</p>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-number">04</div>
+                        <h3 class="problem-title">Alto CAPEX</h3>
+                        <p class="problem-desc">Investimento inicial proibitivo</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Solution -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="hero-title">Our Solution</h2>
+                <p class="subtitle">Uma plataforma completa que elimina fricções</p>
+                <div class="solution-visual">
+                    <div class="solution-circle circle-center">OFFI AI</div>
+                    <div class="solution-circle circle-outer" style="top: 20%; left: 20%;">Search</div>
+                    <div class="solution-circle circle-outer" style="top: 20%; right: 20%;">Match</div>
+                    <div class="solution-circle circle-outer" style="bottom: 20%; left: 20%;">Finance</div>
+                    <div class="solution-circle circle-outer" style="bottom: 20%; right: 20%;">Occupy</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Complete Journey -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="hero-title">Complete Journey</h2>
+                <p class="subtitle">Do match à ocupação, incluindo financiamento</p>
+                <div style="max-width: 800px; margin: 3rem auto; text-align: left;">
+                    <div style="display: grid; gap: 2rem; opacity: 0; animation: fadeIn 1s ease 0.5s forwards;">
+                        <div style="display: flex; align-items: center; gap: 2rem;">
+                            <div style="font-size: 3rem; opacity: 0.3;">🔍</div>
+                            <div>
+                                <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Busca Inteligente</h3>
+                                <p style="color: var(--gray-400);">AI analisa 100+ variáveis para o match perfeito</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 2rem; animation-delay: 0.2s;">
+                            <div style="font-size: 3rem; opacity: 0.3;">🏢</div>
+                            <div>
+                                <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Dados Exclusivos</h3>
+                                <p style="color: var(--gray-400);">100% dos edifícios com informações que o mercado não tem</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 2rem; animation-delay: 0.4s;">
+                            <div style="font-size: 3rem; opacity: 0.3;">💰</div>
+                            <div>
+                                <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">OFFI Finance</h3>
+                                <p style="color: var(--gray-400);">Financiamos 100% do CAPEX - transforme em OPEX</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 2rem; animation-delay: 0.6s;">
+                            <div style="font-size: 3rem; opacity: 0.3;">🔑</div>
+                            <div>
+                                <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Solução Turn-key</h3>
+                                <p style="color: var(--gray-400);">Arquitetos, construtoras e fornecedores verificados</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Market Size -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="hero-title">Market Opportunity</h2>
+                <div class="market-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">R$ 15B</div>
+                        <div class="stat-label">Mercado anual SP</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">5.000+</div>
+                        <div class="stat-label">Empresas alvo</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">45M m²</div>
+                        <div class="stat-label">Área corporativa</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Product -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="hero-title">Product Experience</h2>
+                <p class="subtitle">Conversational AI meets exceptional design</p>
+                <div class="product-showcase">
+                    <div class="device-mockup">
+                        <div class="screen-content">
+                            <!-- Simplified product UI representation -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Features -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="big-number">95%</div>
+                <h2 class="subtitle">Match accuracy com nossa AI</h2>
+                <p style="color: var(--gray-500); margin-top: 2rem; font-size: 1.125rem;">
+                    Algoritmo analisa 100+ variáveis para encontrar<br>
+                    o espaço perfeito em minutos, não meses
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Business Model -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="hero-title">Revenue Model</h2>
+                <div class="revenue-streams">
+                    <div class="revenue-card">
+                        <div class="revenue-icon">🎯</div>
+                        <div class="revenue-title">Success Fee</div>
+                        <div class="revenue-percentage">5-10%</div>
+                    </div>
+                    <div class="revenue-card">
+                        <div class="revenue-icon">💰</div>
+                        <div class="revenue-title">OFFI Finance</div>
+                        <div class="revenue-percentage">2-3%</div>
+                    </div>
+                    <div class="revenue-card">
+                        <div class="revenue-icon">🏢</div>
+                        <div class="revenue-title">Listing Premium</div>
+                        <div class="revenue-percentage">R$ 2k/mês</div>
+                    </div>
+                    <div class="revenue-card">
+                        <div class="revenue-icon">🤝</div>
+                        <div class="revenue-title">Marketplace</div>
+                        <div class="revenue-percentage">15%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Traction -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="hero-title">Traction & Milestones</h2>
+                <div class="traction-timeline">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h3>Q1 2024</h3>
+                        <p>MVP Launch<br>10 pilot customers</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h3>Q2 2024</h3>
+                        <p>500 buildings<br>R$ 10M GMV</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h3>Q4 2024</h3>
+                        <p>1000+ buildings<br>R$ 100M GMV</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Competitive Advantage -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="big-number">#1</div>
+                <h2 class="subtitle">Única plataforma 100% do lado do ocupante</h2>
+                <p style="color: var(--gray-500); margin-top: 2rem; font-size: 1.125rem;">
+                    Zero conflito de interesse.<br>
+                    Total transparência.<br>
+                    AI-first approach.
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Team -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="hero-title">Dream Team</h2>
+                <p class="subtitle">20+ anos de experiência combinada</p>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="member-avatar">CEO</div>
+                        <div class="member-name">Founder</div>
+                        <div class="member-role">Ex-Loft, 10y Real Estate</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">CTO</div>
+                        <div class="member-name">Tech Lead</div>
+                        <div class="member-role">Ex-Google, AI Expert</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">CPO</div>
+                        <div class="member-name">Product</div>
+                        <div class="member-role">Ex-Airbnb, UX Master</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">CFO</div>
+                        <div class="member-name">Finance</div>
+                        <div class="member-role">Ex-Nubank, Fintech</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Investment Ask -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="hero-title">Investment Round</h2>
+                <div class="big-number" style="font-size: 8rem;">R$ 15M</div>
+                <p class="subtitle">Series A para acelerar expansão</p>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem; margin-top: 3rem; opacity: 0; animation: fadeIn 1s ease 1s forwards;">
+                    <div style="text-align: center;">
+                        <h3 style="font-size: 2rem; margin-bottom: 0.5rem;">40%</h3>
+                        <p style="color: var(--gray-400);">Product & Tech</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <h3 style="font-size: 2rem; margin-bottom: 0.5rem;">35%</h3>
+                        <p style="color: var(--gray-400);">Growth & Marketing</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <h3 style="font-size: 2rem; margin-bottom: 0.5rem;">25%</h3>
+                        <p style="color: var(--gray-400);">Operations</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Vision -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="hero-title" style="font-size: 6rem;">2030</h2>
+                <p class="subtitle">A primeira proptech unicorn do Brasil</p>
+                <div style="margin-top: 3rem; opacity: 0; animation: fadeIn 1s ease 1s forwards;">
+                    <p style="font-size: 1.5rem; line-height: 1.8; color: var(--gray-300);">
+                        10.000 empresas usando OFFI<br>
+                        R$ 1B+ em GMV anual<br>
+                        Expansão LATAM
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: CTA -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="cta-content">
+                    <h2 class="hero-title">Let's build the future<br>of work together</h2>
+                    <div class="cta-buttons">
+                        <a href="#" class="btn btn-primary">Schedule a Meeting</a>
+                        <a href="#" class="btn btn-secondary">Download Deck</a>
+                    </div>
+                    <div class="contact-info">
+                        <p>investors@offi.com.br | +55 11 9999-9999</p>
+                        <p style="margin-top: 0.5rem;">São Paulo, Brasil</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            const speed = 0.1;
+            cursorX += (mouseX - cursorX) * speed;
+            cursorY += (mouseY - cursorY) * speed;
+            
+            cursor.style.left = cursorX - 10 + 'px';
+            cursor.style.top = cursorY - 10 + 'px';
+            
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        document.addEventListener('mousedown', () => cursor.classList.add('clicking'));
+        document.addEventListener('mouseup', () => cursor.classList.remove('clicking'));
+
+        // Slide Navigation
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progressBar');
+        let currentSlide = 0;
+
+        function updateProgress() {
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            progressBar.style.width = progress + '%';
+        }
+
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+            updateProgress();
+            
+            // Reset animations for the new slide
+            const newSlide = slides[index];
+            const animatedElements = newSlide.querySelectorAll('[style*="animation"]');
+            animatedElements.forEach(el => {
+                const animation = el.style.animation;
+                el.style.animation = 'none';
+                setTimeout(() => {
+                    el.style.animation = animation;
+                }, 10);
+            });
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            } else if (e.key === 'Escape') {
+                showSlide(0);
+            }
+        });
+
+        // Click Navigation
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('a, button')) {
+                nextSlide();
+            }
+        });
+
+        // Touch Navigation
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                nextSlide();
+            }
+            if (touchEndX > touchStartX + 50) {
+                prevSlide();
+            }
+        }
+
+        // Initialize
+        updateProgress();
+
+        // Auto-advance timer (optional)
+        let autoAdvance = null;
+        function startAutoAdvance() {
+            autoAdvance = setInterval(() => {
+                if (currentSlide < slides.length - 1) {
+                    nextSlide();
+                } else {
+                    clearInterval(autoAdvance);
+                }
+            }, 10000); // 10 seconds per slide
+        }
+
+        // Uncomment to enable auto-advance
+        // startAutoAdvance();
+
+        // Stop auto-advance on user interaction
+        document.addEventListener('click', () => {
+            if (autoAdvance) {
+                clearInterval(autoAdvance);
+            }
+        });
+
+        document.addEventListener('keydown', () => {
+            if (autoAdvance) {
+                clearInterval(autoAdvance);
+            }
+        });
+    </script>
+</body>
+</html>
